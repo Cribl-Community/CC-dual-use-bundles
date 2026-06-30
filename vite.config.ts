@@ -44,21 +44,23 @@ const injectScriptFromQueryPlugin = () => {
     transformIndexHtml(html: string, ctx: IndexHtmlTransformContext): IndexHtmlTransformResult{
       const url = new URL(ctx.originalUrl ?? '/', 'https://localhost');
       initScriptUrl = initScriptUrl || url.searchParams.get('init');
-      const root = process.cwd();
-      let appName;
-      try {
-        const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf-8')) as { name?: string };
-        appName = pkg.name;
-      } catch {
-        /* ignore missing or invalid package.json */
-      }
-      appName = appName || 'unknown';
       const tags: Array<{ tag: string; attrs?: Record<string, string>; children?: string; injectTo: 'head-prepend' }> = [];
-      tags.push({
-        tag: 'script',
-        children: `window.CRIBL_APP_ID = '__dev__${appName}';`,
-        injectTo: 'head-prepend' as const,
-      });
+      if (ctx.server) {
+        const root = process.cwd();
+        let appName;
+        try {
+          const pkg = JSON.parse(readFileSync(join(root, 'package.json'), 'utf-8')) as { name?: string };
+          appName = pkg.name;
+        } catch {
+          /* ignore missing or invalid package.json */
+        }
+        appName = appName || 'unknown';
+        tags.push({
+          tag: 'script',
+          children: `window.CRIBL_APP_ID = '__dev__${appName}';`,
+          injectTo: 'head-prepend' as const,
+        });
+      }
       if (initScriptUrl) {
         tags.push({
           tag: 'script',

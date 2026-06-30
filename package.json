@@ -1,7 +1,7 @@
 {
   "name": "dual-use-bundles-dev",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.0.0",
   "type": "module",
   "displayName": "Dual-Use Resource Bundles (Development)",
   "description": "Development branch of the Dual-Use Resource Bundles app — experimental features and new capabilities for security/observability data source guidance",
